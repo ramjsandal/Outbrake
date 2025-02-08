@@ -214,6 +214,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1917773071}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &928901262 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8697638169787633672, guid: a9c6109b891253444adbf5db3f43304f, type: 3}
+  m_PrefabInstance: {fileID: 1668829781636853918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &928901268
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928901262}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1581439753
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,13 +327,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1581439753}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.38, y: 0.47, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7042006, w: 0.71000105}
+  m_LocalPosition: {x: -13.36, y: 3.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -89.53}
 --- !u!114 &1581439756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,6 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  damage: 50
 --- !u!61 &1581439757
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -25460,6 +25493,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8141779720474026027, guid: a9c6109b891253444adbf5db3f43304f, type: 3}
+      propertyPath: kbModifier
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 8697638169787633672, guid: a9c6109b891253444adbf5db3f43304f, type: 3}
       propertyPath: m_Name
       value: Zombie
@@ -25467,7 +25504,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8697638169787633672, guid: a9c6109b891253444adbf5db3f43304f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 928901268}
   m_SourcePrefab: {fileID: 100100000, guid: a9c6109b891253444adbf5db3f43304f, type: 3}
 --- !u!1001 &4258909560210391680
 PrefabInstance:

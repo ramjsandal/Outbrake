@@ -20,8 +20,13 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     protected int moneyDrop;
 
-    private Player player; 
-    private Rigidbody2D rbPlayer; 
+    [SerializeField]
+    protected int kbModifier;
+
+    private Player player;
+    private Rigidbody2D rbPlayer;
+    private Rigidbody2D rb;
+    private int currentHealth;
 
     bool chooseNewPosition;
     private Vector3 nextPosition;
@@ -30,7 +35,9 @@ public class Zombie : MonoBehaviour
         chooseNewPosition = true;
         nextPosition = transform.position;
         player = FindObjectOfType<Player>();
-        rbPlayer = player.GetComponent<Rigidbody2D>(); 
+        rbPlayer = player.GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -39,6 +46,7 @@ public class Zombie : MonoBehaviour
         Move();
     }
 
+    bool stunned = false;
     void Move()
     {
         if (chooseNewPosition)
@@ -46,11 +54,13 @@ public class Zombie : MonoBehaviour
             StartCoroutine(ChoosePosition());
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * speed);
-        Vector2Int posn = GridManager.Instance.GetCellPosition(nextPosition);
-        List<Vector2Int> list = new List<Vector2Int>() { posn };
-        GridManager.Instance.TintTiles(list, Color.red);
- 
+        if (!stunned)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * speed);
+            Vector2Int posn = GridManager.Instance.GetCellPosition(nextPosition);
+            List<Vector2Int> list = new List<Vector2Int>() { posn };
+            GridManager.Instance.TintTiles(list, Color.red);
+        }
     }
 
     IEnumerator ChoosePosition()
@@ -65,25 +75,50 @@ public class Zombie : MonoBehaviour
         chooseNewPosition = true;
     }
 
+    IEnumerator Knockback()
+    {
+        stunned = true;
+        rb.isKinematic = false;
+        rb.freezeRotation = false;
+        rb.AddForce((transform.position - nextPosition).normalized * kbModifier);
+        yield return new WaitForSeconds(2);
+        rb.isKinematic = true;
+        rb.SetRotation(0);
+        rb.freezeRotation = true;
+        rb.velocity = Vector2.zero;
+        stunned = false;
+    } 
+
     void OnCollisionEnter2D(Collision2D col)
     {
-        // Damage player
-        player.TakeDamage(1);
+        if (col != null && col.gameObject.CompareTag("Player"))
+        {
+            // Damage player
+            player.TakeDamage(damage);
 
-        // Take knockback 
-        Vector3 playerPos = rbPlayer.position;
-        Vector3 zombiePos = transform.position;
+            // Take Damage
+            this.TakeDamage(player.damage);
 
-        Vector3 difference = playerPos - zombiePos;
-        Vector3 newDifference= new Vector3(col.relativeVelocity.x*difference.x, col.relativeVelocity.y*difference.y, 0)/2;
-        Vector3 newPosition = transform.position - newDifference;
+            StartCoroutine(Knockback());
+            /*
 
-        // Debug.Log(rbPlayer.velocity.x);
-        // Debug.Log(rbPlayer.velocity.y);
-        // Debug.Log("");
+            // Take knockback 
+            Vector3 playerPos = rbPlayer.position;
+            Vector3 zombiePos = transform.position;
 
-        transform.position = newPosition;
-        // transform.position = Vector3.MoveTowards(transform.position, newPosition, 1.0f);
+            Vector3 difference = playerPos - zombiePos;
+            Vector3 newDifference = new Vector3(col.relativeVelocity.x * difference.x, col.relativeVelocity.y * difference.y, 0) / 2;
+            Vector3 newPosition = transform.position - newDifference;
+
+            // Debug.Log(rbPlayer.velocity.x);
+            // Debug.Log(rbPlayer.velocity.y);
+            // Debug.Log("");
+
+            transform.position = newPosition;
+            // transform.position = Vector3.MoveTowards(transform.position, newPosition, 1.0f);
+            */
+        }
+
     }
 
     void Die()
@@ -99,7 +134,16 @@ public class Zombie : MonoBehaviour
             yOffset = UnityEngine.Random.Range(0, 5);
             money.transform.position = new Vector3(xOffset, yOffset, 0);
         }
-        
+
         Destroy(gameObject);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 }
