@@ -344,7 +344,7 @@ public class GridManager : MonoBehaviour
         float elapsedLength = 0;
 
         direction.Normalize();
-        float stepSize = direction.magnitude / 2.0f;
+        float stepSize = direction.magnitude / 100.0f;
 
         Vector3 currentPosition = startPos;
 
@@ -354,7 +354,7 @@ public class GridManager : MonoBehaviour
             {
                 return false;
             }
-            currentPosition += direction;
+            currentPosition += direction / 100.0f;
             elapsedLength += stepSize;
         }
 
