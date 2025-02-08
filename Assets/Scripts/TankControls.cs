@@ -5,9 +5,13 @@ using static GridManager;
 
 public class TankControls : MonoBehaviour
 {
-    // 
     private Rigidbody2D rb; 
-    private float topSpeed = 5f;
+    // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
+    private float topSpeed = 8f;
+    // Increase inertia to be closer to 1 to take longer to slow down
+    // 
+    float inertia = 0.99f;
+    float acceleration = 4.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -18,39 +22,25 @@ public class TankControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Inputs for direction
-        float horizontalInput = Input.GetAxis("Horizontal");  
+        // Moving towards the direction being faced
         float verticalInput = Input.GetAxis("Vertical");  
+        float verticalForce = verticalInput * acceleration;
 
-        // If no input, if speed not zero, add force in negative direction
-        float horizontalForce = 0;
-        float verticalForce = 0;
+        // Custom inertia
+        rb.velocity = rb.velocity * inertia;
 
-        if (horizontalInput == 0) {
-            if (rb.velocity.x != 0) {
-                horizontalForce = -0.25f * rb.velocity.x;
-            }
-        } else {
-            horizontalForce = horizontalInput * 0.75f;    
-            if (horizontalInput * rb.velocity.x < 0) {
-                horizontalForce *= 2.5f;
-            }  
-        }
+        // Update velocity
+        Vector2 forceInput = new Vector2(0, verticalForce);
+        rb.AddRelativeForce(forceInput);
 
-        if (verticalInput == 0) {
-            if (rb.velocity.y != 0) {
-                verticalForce = -0.25f * rb.velocity.y;
-            }
-        } else {
-            verticalForce = verticalInput * 0.75f;
-            if (verticalInput * rb.velocity.y < 0) {
-                verticalForce *= 2.5f;
-            }
-        }
-
-        Vector2 forceInput = new Vector2(horizontalForce, verticalForce);
-        rb.AddForce(forceInput);
-
+        // Cap max speed
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, topSpeed);
+
+
+        // Update rotation
+        // Negative bc idk it just didn't work.
+        // 2.5 to make it rotate faster
+        float horizontalInput = Input.GetAxis("Horizontal");  
+        rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
     }
 }
