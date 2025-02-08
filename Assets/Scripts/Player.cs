@@ -8,18 +8,50 @@ public class Player : MonoBehaviour
     public int health = 100;
 
     public int damage = 50;
+
+    private Rigidbody2D rb;
+    // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
+    private float topSpeed = 8f;
+
+
+    // Increase inertia to be closer to 1 to take longer to slow down
+    // 
+    float inertia = 0.99f;
+    float acceleration = 4.0f;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Moving towards the direction being faced
+        float verticalInput = Input.GetAxis("Vertical");
+        float verticalForce = verticalInput * acceleration;
+
+        // Custom inertia
+        rb.velocity = rb.velocity * inertia;
+
+        // Update velocity
+        Vector2 forceInput = new Vector2(0, verticalForce);
+        rb.AddRelativeForce(forceInput);
+
+        // Cap max speed
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, topSpeed);
+
+        // Update rotation
+        // Negative bc idk it just didn't work.
+        // 2.5 to make it rotate faster
+        float horizontalInput = Input.GetAxis("Horizontal");
+        rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
     }
 
-    public void TakeDamage(int damage) {
+    public void TakeDamage(int damage)
+    {
         health -= damage;
         Debug.Log("Health: " + health);
     }

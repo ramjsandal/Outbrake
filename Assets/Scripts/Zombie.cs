@@ -24,7 +24,6 @@ public class Zombie : MonoBehaviour
     protected int kbModifier;
 
     private Player player;
-    private Rigidbody2D rbPlayer;
     private Rigidbody2D rb;
     private int currentHealth;
 
@@ -35,7 +34,6 @@ public class Zombie : MonoBehaviour
         chooseNewPosition = true;
         nextPosition = transform.position;
         player = FindObjectOfType<Player>();
-        rbPlayer = player.GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
     }
@@ -100,23 +98,7 @@ public class Zombie : MonoBehaviour
             this.TakeDamage(player.damage);
 
             StartCoroutine(Knockback());
-            /*
-
-            // Take knockback 
-            Vector3 playerPos = rbPlayer.position;
-            Vector3 zombiePos = transform.position;
-
-            Vector3 difference = playerPos - zombiePos;
-            Vector3 newDifference = new Vector3(col.relativeVelocity.x * difference.x, col.relativeVelocity.y * difference.y, 0) / 2;
-            Vector3 newPosition = transform.position - newDifference;
-
-            // Debug.Log(rbPlayer.velocity.x);
-            // Debug.Log(rbPlayer.velocity.y);
-            // Debug.Log("");
-
-            transform.position = newPosition;
-            // transform.position = Vector3.MoveTowards(transform.position, newPosition, 1.0f);
-            */
+            
         }
 
     }
