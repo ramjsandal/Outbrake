@@ -12,6 +12,8 @@ public class MoneyPool : MonoBehaviour
 
     public GameObject moneyPrefab;
 
+    public int playerMoney;
+
     private HashSet<GameObject> pool;
 
     private int numActive;
@@ -27,6 +29,7 @@ public class MoneyPool : MonoBehaviour
 
             pool = new HashSet<GameObject>();
             numActive = 0;
+            playerMoney = 0;
 
             for (int i = 0; i < initialMoneyToPool; i++)
             {
@@ -65,6 +68,7 @@ public class MoneyPool : MonoBehaviour
     public void ReturnToPool(GameObject money)
     {
         money.SetActive(false);
+        playerMoney++;
         numActive--;
     }
 
