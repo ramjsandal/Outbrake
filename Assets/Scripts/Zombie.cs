@@ -2,27 +2,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using static GridManager;
 
-public class Enemy : MonoBehaviour
+public class Zombie : MonoBehaviour
 {
     [SerializeField]
-    private float speed = .05f;
+    protected float speed;
+
+    [SerializeField]
+    protected int maxHealth;
+
+    [SerializeField]
+    protected int damage;
+
+    [SerializeField]
+    protected int moneyDrop;
 
     bool chooseNewPosition;
     private Vector3 nextPosition;
-    void Start()
+    protected void Start()
     {
         chooseNewPosition = true;
         nextPosition = transform.position;
+        Invoke("Die", 3);
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
+        Move();
+    }
 
-
+    void Move()
+    {
         if (chooseNewPosition)
         {
             StartCoroutine(ChoosePosition());
@@ -32,6 +46,7 @@ public class Enemy : MonoBehaviour
         Vector2Int posn = GridManager.Instance.GetCellPosition(nextPosition);
         List<Vector2Int> list = new List<Vector2Int>() { posn };
         GridManager.Instance.TintTiles(list, Color.red);
+ 
     }
 
     IEnumerator ChoosePosition()
@@ -44,5 +59,22 @@ public class Enemy : MonoBehaviour
         float timeToReachNextPosition = Vector3.Distance(transform.position, nextPosition) / speed;
         yield return new WaitForSeconds(Math.Min(timeToReachNextPosition, 1));
         chooseNewPosition = true;
+    }
+
+    void Die()
+    {
+        MoneyPool moneyPool = MoneyPool.Instance;
+
+        float xOffset = 0;
+        float yOffset = 0;
+        for (int i = 0; i < moneyDrop; i++)
+        {
+            GameObject money = moneyPool.GetPooledObject();
+            xOffset = UnityEngine.Random.Range(0, 5);
+            yOffset = UnityEngine.Random.Range(0, 5);
+            money.transform.position = new Vector3(xOffset, yOffset, 0);
+        }
+        
+        Destroy(gameObject);
     }
 }
