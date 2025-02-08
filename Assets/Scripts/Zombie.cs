@@ -26,7 +26,6 @@ public class Zombie : MonoBehaviour
     {
         chooseNewPosition = true;
         nextPosition = transform.position;
-        Invoke("Die", 3);
     }
 
     // Update is called once per frame
