@@ -20,12 +20,17 @@ public class Zombie : MonoBehaviour
     [SerializeField]
     protected int moneyDrop;
 
+    private Player player; 
+    private Rigidbody2D rbPlayer; 
+
     bool chooseNewPosition;
     private Vector3 nextPosition;
     protected void Start()
     {
         chooseNewPosition = true;
         nextPosition = transform.position;
+        player = FindObjectOfType<Player>();
+        rbPlayer = player.GetComponent<Rigidbody2D>(); 
     }
 
     // Update is called once per frame
@@ -58,6 +63,27 @@ public class Zombie : MonoBehaviour
         float timeToReachNextPosition = Vector3.Distance(transform.position, nextPosition) / speed;
         yield return new WaitForSeconds(Math.Min(timeToReachNextPosition, 1));
         chooseNewPosition = true;
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        // Damage player
+        player.TakeDamage(1);
+
+        // Take knockback 
+        Vector3 playerPos = rbPlayer.position;
+        Vector3 zombiePos = transform.position;
+
+        Vector3 difference = playerPos - zombiePos;
+        Vector3 newDifference= new Vector3(col.relativeVelocity.x*difference.x, col.relativeVelocity.y*difference.y, 0)/2;
+        Vector3 newPosition = transform.position - newDifference;
+
+        // Debug.Log(rbPlayer.velocity.x);
+        // Debug.Log(rbPlayer.velocity.y);
+        // Debug.Log("");
+
+        transform.position = newPosition;
+        // transform.position = Vector3.MoveTowards(transform.position, newPosition, 1.0f);
     }
 
     void Die()

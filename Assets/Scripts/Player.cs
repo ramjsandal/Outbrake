@@ -16,4 +16,9 @@ public class Player : MonoBehaviour
     void Update()
     {
     }
+
+    public void TakeDamage(int damage) {
+        health -= damage;
+        Debug.Log("Health: " + health);
+    }
 }
