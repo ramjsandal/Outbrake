@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static GridManager;
 
 public class Player : MonoBehaviour
@@ -54,10 +55,20 @@ public class Player : MonoBehaviour
     {
         health -= damage;
         Debug.Log("Health: " + health);
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
     public Vector2 GetVelocity()
     {
         return rb.velocity;
     }
+
+    public void Die()
+    {
+        SceneLoader.LoadScene(0);
+    }
+
 }
