@@ -127,12 +127,13 @@ public class Zombie : MonoBehaviour
 
         float xOffset = 0;
         float yOffset = 0;
+        Vector3 pos = transform.position;
         for (int i = 0; i < moneyDrop; i++)
         {
             GameObject money = moneyPool.GetPooledObject();
-            xOffset = UnityEngine.Random.Range(0, 5);
-            yOffset = UnityEngine.Random.Range(0, 5);
-            money.transform.position = new Vector3(xOffset, yOffset, 0);
+            xOffset = UnityEngine.Random.Range(0.0f, 3.0f);
+            yOffset = UnityEngine.Random.Range(0.0f, 3.0f);
+            money.transform.position = new Vector3(pos.x + xOffset, pos.y + yOffset, 0);
         }
 
         Destroy(gameObject);
