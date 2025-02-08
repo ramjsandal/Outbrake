@@ -17,4 +17,9 @@ public class PoliceZombie : Zombie
         base.Update();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        base.OnCollisionEnter2D (collision);
+    }
+
 }

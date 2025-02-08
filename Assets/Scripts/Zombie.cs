@@ -79,26 +79,38 @@ public class Zombie : MonoBehaviour
         rb.isKinematic = false;
         rb.freezeRotation = false;
         rb.AddForce((transform.position - nextPosition).normalized * kbModifier);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         rb.isKinematic = true;
         rb.SetRotation(0);
         rb.freezeRotation = true;
         rb.velocity = Vector2.zero;
         stunned = false;
-    } 
+    }
 
-    void OnCollisionEnter2D(Collision2D col)
+    protected void OnCollisionEnter2D(Collision2D col)
     {
         if (col != null && col.gameObject.CompareTag("Player"))
         {
-            // Damage player
-            player.TakeDamage(damage);
+            Vector2 vel = player.GetVelocity();
+            float speed = vel.magnitude;
+            Debug.Log(speed);
 
-            // Take Damage
-            this.TakeDamage(player.damage);
+            // if player is going too slow, damage the player
+            if (speed < .25f)
+            {
+                // Damage player
+                player.TakeDamage(damage);
+            }
+            else
+            {
+                // if were going fast enough, damage the zombie
+                // based on how fast the player is going
+                this.TakeDamage((int)(player.damage * speed));
 
+
+            }
             StartCoroutine(Knockback());
-            
+
         }
 
     }
@@ -116,7 +128,7 @@ public class Zombie : MonoBehaviour
             GameObject money = moneyPool.GetPooledObject();
             xOffset = UnityEngine.Random.Range(-1.0f, 1.0f);
             yOffset = UnityEngine.Random.Range(-1.0f, 1.0f);
-            zRotation = UnityEngine.Random.Range(-180.0f, 180.0f); 
+            zRotation = UnityEngine.Random.Range(-180.0f, 180.0f);
             money.transform.position = new Vector3(pos.x + xOffset, pos.y + yOffset, 0);
             money.transform.Rotate(new Vector3(0, 0, zRotation));
         }

@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 {
     public int health = 100;
 
-    public int damage = 50;
+    public int damage = 100;
 
     private Rigidbody2D rb;
     // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
@@ -54,5 +54,10 @@ public class Player : MonoBehaviour
     {
         health -= damage;
         Debug.Log("Health: " + health);
+    }
+
+    public Vector2 GetVelocity()
+    {
+        return rb.velocity;
     }
 }
