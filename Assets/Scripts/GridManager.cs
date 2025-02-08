@@ -22,6 +22,9 @@ public class GridManager : MonoBehaviour
     public Tilemap traversable;
     public Tilemap notTraversable;
     public Dictionary<Vector2Int, TileInfo> map;
+    public List<NodeInfo> pathsToPlayer;
+
+    private Player player;
 
     private void Awake()
     {
@@ -35,8 +38,16 @@ public class GridManager : MonoBehaviour
             traversable.CompressBounds();
             notTraversable.CompressBounds();
             map = new Dictionary<Vector2Int, TileInfo>();
+            pathsToPlayer = new List<NodeInfo>();
+            player = FindObjectOfType<Player>();
             CreateGrid();
         }
+    }
+
+    private void Update()
+    {
+        pathsToPlayer.Clear();
+        pathsToPlayer = Dijkstras(GetCellPosition(player.transform.position), -1);
     }
 
     public void CreateGrid()
@@ -131,6 +142,11 @@ public class GridManager : MonoBehaviour
         Vector3Int pos3 = traversable.WorldToCell(worldPos);
         Vector2Int pos = new Vector2Int(pos3.x, pos3.y);
         return pos;
+    }
+
+    public Vector3 GetWorldPosition(Vector2Int cellPosition)
+    {
+        return traversable.GetCellCenterWorld(new Vector3Int(cellPosition.x, cellPosition.y));
     }
 
     public Vector2Int MouseToGrid()
@@ -274,6 +290,76 @@ public class GridManager : MonoBehaviour
         }
 
         return searched;
+
+    }
+
+    public List<NodeInfo> GetPathToPlayer(Vector3 worldPosition)
+    {
+        List<NodeInfo> ret = new List<NodeInfo>();
+        NodeInfo currentCell = new NodeInfo();
+        currentCell.position = GetCellPosition(worldPosition);
+
+        // find ourself in the dijkstras result
+        int exists = pathsToPlayer.IndexOf(currentCell);
+
+        // if we dont exist we just return an array with just us in it
+        if (exists == -1)
+        {
+            ret.Add(currentCell);
+            return ret;
+        } else
+        {
+            int currentIdx = exists;
+            // we want to trace our steps
+            while (currentIdx != -1)
+            {
+                ret.Add(pathsToPlayer[currentIdx]);
+                currentIdx = pathsToPlayer[currentIdx].parentIdx;
+            }
+        }
+
+        return ret;
+    }
+
+    // Return the first node on the smoothed path
+    public NodeInfo SmoothPath(Vector3 startingWorldPosition, List<NodeInfo> path)
+    {
+        Vector2Int startingPosition = path[0].position;
+        for (int i = path.Count - 1; i >= 0; i--)
+        {
+            if (StraightLineWalkable(startingWorldPosition, GetWorldPosition(path[i].position)))
+            {
+                return path[i];
+            }
+        }
+
+        return path[0];
+        
+    }
+
+    private bool StraightLineWalkable(Vector3 startPos, Vector3 endPos)
+    {
+        Vector3 direction = endPos - startPos;
+        float length = direction.magnitude;
+        float elapsedLength = 0;
+
+        direction.Normalize();
+        float stepSize = direction.magnitude / 2.0f;
+
+        Vector3 currentPosition = startPos;
+
+        while (elapsedLength < length)
+        {
+            if (notTraversable.HasTile(notTraversable.WorldToCell(currentPosition)))
+            {
+                return false;
+            }
+            currentPosition += direction;
+            elapsedLength += stepSize;
+        }
+
+        return true;
+
 
     }
 
