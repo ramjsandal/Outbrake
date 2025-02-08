@@ -5,6 +5,7 @@ using static GridManager;
 
 public class Player : MonoBehaviour
 {
+    public int health = 100;
     // Start is called before the first frame update
     void Start()
     {
