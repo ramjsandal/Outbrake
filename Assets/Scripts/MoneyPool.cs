@@ -72,4 +72,9 @@ public class MoneyPool : MonoBehaviour
         numActive--;
     }
 
+    public void SpendMoney(int amount)
+    {
+        playerMoney -= amount;
+    }
+
 }

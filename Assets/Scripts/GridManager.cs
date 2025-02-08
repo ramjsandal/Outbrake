@@ -41,13 +41,18 @@ public class GridManager : MonoBehaviour
             pathsToPlayer = new List<NodeInfo>();
             player = FindObjectOfType<Player>();
             CreateGrid();
+            prevPosition = GetCellPosition(player.transform.position);
         }
     }
 
+    Vector2Int prevPosition;
     private void Update()
     {
-        pathsToPlayer.Clear();
-        pathsToPlayer = Dijkstras(GetCellPosition(player.transform.position), -1);
+        if (GetCellPosition(player.transform.position) != prevPosition)
+        {
+            pathsToPlayer.Clear();
+            pathsToPlayer = Dijkstras(GetCellPosition(player.transform.position), 15);
+        }
     }
 
     public void CreateGrid()
@@ -307,7 +312,8 @@ public class GridManager : MonoBehaviour
         {
             ret.Add(currentCell);
             return ret;
-        } else
+        }
+        else
         {
             int currentIdx = exists;
             // we want to trace our steps
@@ -334,7 +340,7 @@ public class GridManager : MonoBehaviour
         }
 
         return path[0];
-        
+
     }
 
     private bool StraightLineWalkable(Vector3 startPos, Vector3 endPos)
