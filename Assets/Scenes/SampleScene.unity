@@ -284,7 +284,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -309,11 +309,11 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.38, y: -0.47, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1581439755}
+  m_Father: {fileID: 1917773071}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581439753
 GameObject:
@@ -377,7 +377,7 @@ SpriteRenderer:
   m_SortingLayerID: -1707377941
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b0b1870940c6fde449b514f6e3250fc7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -400,8 +400,7 @@ Transform:
   m_LocalPosition: {x: 2.38, y: 0.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 519420032}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1581439756
@@ -501,6 +500,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec8070345c598f34696362b6c0a93f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: e3f12f9efe857734f8b97839e84999da, type: 3}
+  - {fileID: 21300000, guid: 825b40731856a8e44ab4fd1ccf174d3d, type: 3}
+  - {fileID: 21300000, guid: b0b1870940c6fde449b514f6e3250fc7, type: 3}
+  - {fileID: 21300000, guid: 16424ce77c1c1964bb3e0a259ef69bd8, type: 3}
+  - {fileID: 21300000, guid: 1a51663e5e69ec541bd1f45a1b1a58c6, type: 3}
+  - {fileID: 21300000, guid: 779ead14bb9397d439a2885653cce12b, type: 3}
+  - {fileID: 21300000, guid: 82d728c3efd7e454a82a738ddaac72a5, type: 3}
+  - {fileID: 21300000, guid: d4a84d8afc0c02c4b9ce2c5e60aa80b3, type: 3}
 --- !u!1 &1615039358
 GameObject:
   m_ObjectHideFlags: 0
@@ -25064,6 +25072,7 @@ Transform:
   m_Children:
   - {fileID: 1615039361}
   - {fileID: 2034710841}
+  - {fileID: 519420032}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2034710838
