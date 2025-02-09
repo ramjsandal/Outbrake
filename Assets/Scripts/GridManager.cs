@@ -21,6 +21,7 @@ public class GridManager : MonoBehaviour
 
     public Tilemap traversable;
     public Tilemap notTraversable;
+    public Tilemap road;
     public Dictionary<Vector2Int, TileInfo> map;
     public List<NodeInfo> pathsToPlayer;
 
