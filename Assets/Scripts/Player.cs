@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 using static GridManager;
 
 public class Player : MonoBehaviour
@@ -12,14 +13,15 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
-    private float topSpeed = 8f;
+    private float topSpeedBaseline = 1.25f;
 
 
     // Increase inertia to be closer to 1 to take longer to slow down
-    // 
     float inertia = 0.99f;
-    float acceleration = 4.0f;
+    float acceleration = 3.0f;
 
+    // vars for checking tiles
+    public Tilemap roadTilemap = null; 
 
     // Start is called before the first frame update
     void Start()
@@ -30,9 +32,17 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         // Moving towards the direction being faced
         float verticalInput = Input.GetAxis("Vertical");
         float verticalForce = verticalInput * acceleration;
+
+        float topSpeed = topSpeedBaseline;
+        if (CheckOnRoad()) {
+            verticalForce *= 2;
+            topSpeed += 2f;
+        }
 
         // Custom inertia
         rb.velocity = rb.velocity * inertia;
@@ -49,6 +59,12 @@ public class Player : MonoBehaviour
         // 2.5 to make it rotate faster
         float horizontalInput = Input.GetAxis("Horizontal");
         rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
+    }
+
+    public bool CheckOnRoad() {
+        Vector3Int tilePosition = roadTilemap.WorldToCell(transform.position);
+        TileBase tile = roadTilemap.GetTile(tilePosition);
+        return tile != null;
     }
 
     public void TakeDamage(int damage)
