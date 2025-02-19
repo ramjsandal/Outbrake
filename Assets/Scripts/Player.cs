@@ -20,26 +20,25 @@ public class Player : MonoBehaviour
     float inertia = 0.99f;
     float acceleration = 3.0f;
 
-    // vars for checking tiles
-    public Tilemap roadTilemap = null; 
+    private GridManager gridManager;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        gridManager = GridManager.Instance;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-
         // Moving towards the direction being faced
         float verticalInput = Input.GetAxis("Vertical");
         float verticalForce = verticalInput * acceleration;
 
         float topSpeed = topSpeedBaseline;
-        if (CheckOnRoad()) {
+        if (gridManager.OnRoad(transform.position)) {
             verticalForce *= 2;
             topSpeed += 2f;
         }
@@ -59,12 +58,6 @@ public class Player : MonoBehaviour
         // 2.5 to make it rotate faster
         float horizontalInput = Input.GetAxis("Horizontal");
         rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
-    }
-
-    public bool CheckOnRoad() {
-        Vector3Int tilePosition = roadTilemap.WorldToCell(transform.position);
-        TileBase tile = roadTilemap.GetTile(tilePosition);
-        return tile != null;
     }
 
     public void TakeDamage(int damage)

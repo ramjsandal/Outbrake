@@ -370,4 +370,11 @@ public class GridManager : MonoBehaviour
 
     }
 
+    public bool OnRoad(Vector3 worldPosition)
+    {
+        Vector3Int tilePosition = road.WorldToCell(worldPosition);
+        TileBase tile = road.GetTile(tilePosition);
+        return tile != null;
+    }
+
 }
