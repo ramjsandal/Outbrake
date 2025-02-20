@@ -58,7 +58,6 @@ public class Zombie : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * speed);
             Vector2Int posn = gridManager.GetCellPosition(nextPosition);
-            List<Vector2Int> list = new List<Vector2Int>() { posn };
         }
     }
 
