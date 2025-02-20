@@ -32,13 +32,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         // Moving towards the direction being faced
         float verticalInput = Input.GetAxis("Vertical");
         float verticalForce = verticalInput * acceleration;
 
         float topSpeed = topSpeedBaseline;
-        if (gridManager.OnRoad(transform.position)) {
+        if (gridManager.OnRoad(transform.position))
+        {
             verticalForce *= 2;
             topSpeed += 2f;
         }
@@ -58,6 +58,9 @@ public class Player : MonoBehaviour
         // 2.5 to make it rotate faster
         float horizontalInput = Input.GetAxis("Horizontal");
         rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
+
+        Camera.main.transform.position = this.transform.position + new Vector3(0,0,-10);
+        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
 
     public void TakeDamage(int damage)
