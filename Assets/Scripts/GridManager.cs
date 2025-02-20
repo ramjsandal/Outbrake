@@ -27,6 +27,10 @@ public class GridManager : MonoBehaviour
 
     private Player player;
 
+
+    // used in dijkstras
+    private PriorityQueue<NodeInfo, int> toSearch;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -43,6 +47,7 @@ public class GridManager : MonoBehaviour
             player = FindObjectOfType<Player>();
             CreateGrid();
             prevPosition = GetCellPosition(player.transform.position);
+            toSearch = new PriorityQueue<NodeInfo, int>();
         }
     }
 
@@ -52,7 +57,7 @@ public class GridManager : MonoBehaviour
         if (GetCellPosition(player.transform.position) != prevPosition)
         {
             pathsToPlayer.Clear();
-            pathsToPlayer = Dijkstras(GetCellPosition(player.transform.position), 15);
+            Dijkstras(ref pathsToPlayer, GetCellPosition(player.transform.position), 15);
         }
     }
 
@@ -146,7 +151,7 @@ public class GridManager : MonoBehaviour
     public Vector2Int GetCellPosition(Vector3 worldPos)
     {
         Vector3Int pos3 = traversable.WorldToCell(worldPos);
-        Vector2Int pos = new Vector2Int(pos3.x, pos3.y);
+        Vector2Int pos = new(pos3.x, pos3.y);
         return pos;
     }
 
@@ -236,15 +241,14 @@ public class GridManager : MonoBehaviour
 
     // checks if a square is both traversable and unoccupied
     // if we give range = -1, search whole map
-    public List<NodeInfo> Dijkstras(Vector2Int startingSquare, int range)
+    public List<NodeInfo> Dijkstras(ref List<NodeInfo> searched, Vector2Int startingSquare, int range)
     {
-        PriorityQueue<NodeInfo, int> toSearch = new PriorityQueue<NodeInfo, int>();
+        toSearch.Clear();
+        searched.Clear();
         NodeInfo start = new NodeInfo();
         start.position = startingSquare;
         start.parentIdx = -1;
         toSearch.Enqueue(start, 0);
-
-        List<NodeInfo> searched = new List<NodeInfo>();
 
         while (toSearch.Count > 0)
         {
