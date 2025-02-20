@@ -26,6 +26,7 @@ public class Zombie : MonoBehaviour
     private Player player;
     private Rigidbody2D rb;
     private int currentHealth;
+    private GridManager gridManager;
 
     bool chooseNewPosition;
     private Vector3 nextPosition;
@@ -36,6 +37,7 @@ public class Zombie : MonoBehaviour
         player = FindObjectOfType<Player>();
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
+        gridManager = GridManager.Instance;
     }
 
     // Update is called once per frame
@@ -55,19 +57,18 @@ public class Zombie : MonoBehaviour
         if (!stunned)
         {
             transform.position = Vector3.MoveTowards(transform.position, nextPosition, Time.deltaTime * speed);
-            Vector2Int posn = GridManager.Instance.GetCellPosition(nextPosition);
+            Vector2Int posn = gridManager.GetCellPosition(nextPosition);
             List<Vector2Int> list = new List<Vector2Int>() { posn };
-            GridManager.Instance.TintTiles(list, Color.red);
         }
     }
 
     IEnumerator ChoosePosition()
     {
         chooseNewPosition = false;
-        List<NodeInfo> path = GridManager.Instance.GetPathToPlayer(this.transform.position);
-        NodeInfo next = GridManager.Instance.SmoothPath(transform.position, path);
+        List<NodeInfo> path = gridManager.GetPathToPlayer(this.transform.position);
+        NodeInfo next = gridManager.SmoothPath(transform.position, path);
         //NodeInfo next = path.Count > 1 ? path[1] : path[0];
-        nextPosition = GridManager.Instance.GetWorldPosition(next.position);
+        nextPosition = gridManager.GetWorldPosition(next.position);
         float timeToReachNextPosition = Vector3.Distance(transform.position, nextPosition) / speed;
         yield return new WaitForSeconds(Math.Min(timeToReachNextPosition, 1));
         chooseNewPosition = true;
