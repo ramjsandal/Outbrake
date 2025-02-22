@@ -55,7 +55,7 @@ public class GridManager : MonoBehaviour
         if (GetCellPosition(player.transform.position) != prevPosition)
         {
             pathsToPlayer.Clear();
-            Dijkstras(ref pathsToPlayer, GetCellPosition(player.transform.position), 15);
+            Dijkstras(ref pathsToPlayer, GetCellPosition(player.transform.position), 60);
         }
     }
 
