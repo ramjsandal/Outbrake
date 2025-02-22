@@ -395,4 +395,9 @@ public class GridManager : MonoBehaviour
         return tile != null;
     }
 
+    public Vector3 GetPlayerPosition()
+    {
+        return player.transform.position;
+    }
+
 }
