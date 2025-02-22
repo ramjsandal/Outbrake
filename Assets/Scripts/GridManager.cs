@@ -23,7 +23,7 @@ public class GridManager : MonoBehaviour
     public Tilemap notTraversable;
     public Tilemap road;
     public Dictionary<Vector2Int, TileInfo> map;
-    public List<NodeInfo> pathsToPlayer;
+    public Dictionary<NodeInfo, NodeInfo> pathsToPlayer;
 
     private Player player;
 
@@ -43,7 +43,7 @@ public class GridManager : MonoBehaviour
             traversable.CompressBounds();
             notTraversable.CompressBounds();
             map = new Dictionary<Vector2Int, TileInfo>();
-            pathsToPlayer = new List<NodeInfo>();
+            pathsToPlayer = new Dictionary<NodeInfo, NodeInfo>(); 
             player = FindObjectOfType<Player>();
             CreateGrid();
             prevPosition = GetCellPosition(player.transform.position);
@@ -198,7 +198,7 @@ public class GridManager : MonoBehaviour
         public Vector2Int position;
 
         // parent node
-        public int parentIdx;
+        public NodeInfo parent;
 
         // distance from origin in moves
         public int distance;
@@ -220,7 +220,7 @@ public class GridManager : MonoBehaviour
             return (int)position.GetHashCode();
         }
 
-        public List<NodeInfo> NeighborsToNodeInfos(List<Vector2Int> neighbors, int parent)
+        public List<NodeInfo> NeighborsToNodeInfos(List<Vector2Int> neighbors, NodeInfo parent)
         {
             List<NodeInfo> nodeInfos = new List<NodeInfo>();
 
@@ -229,7 +229,7 @@ public class GridManager : MonoBehaviour
                 NodeInfo current = new NodeInfo();
                 current.position = neighbor;
                 current.distance = distance + 1;
-                current.parentIdx = parent;
+                current.parent = parent;
                 nodeInfos.Add(current);
             }
 
@@ -241,13 +241,13 @@ public class GridManager : MonoBehaviour
 
     // checks if a square is both traversable and unoccupied
     // if we give range = -1, search whole map
-    public List<NodeInfo> Dijkstras(ref List<NodeInfo> searched, Vector2Int startingSquare, int range)
+    public void Dijkstras(ref Dictionary<NodeInfo, NodeInfo> searched, Vector2Int startingSquare, int range)
     {
         toSearch.Clear();
         searched.Clear();
         NodeInfo start = new NodeInfo();
         start.position = startingSquare;
-        start.parentIdx = -1;
+        start.parent = null;
         toSearch.Enqueue(start, 0);
 
         while (toSearch.Count > 0)
@@ -256,9 +256,9 @@ public class GridManager : MonoBehaviour
             NodeInfo current;
             toSearch.TryPeek(out current, out currentDist);
             toSearch.Dequeue();
-            searched.Add(current);
+            searched.Add(current, current.parent);
 
-            List<NodeInfo> neighbors = current.NeighborsToNodeInfos(GetNeighbors(current.position), searched.Count - 1);
+            List<NodeInfo> neighbors = current.NeighborsToNodeInfos(GetNeighbors(current.position), current);
 
             foreach (NodeInfo neighbor in neighbors)
             {
@@ -283,7 +283,7 @@ public class GridManager : MonoBehaviour
                 }
 
                 // if already in searched list, dont add
-                if (searched.Contains(neighbor))
+                if (searched.ContainsKey(neighbor))
                 {
                     continue;
                 }
@@ -299,8 +299,6 @@ public class GridManager : MonoBehaviour
 
         }
 
-        return searched;
-
     }
 
     public List<NodeInfo> GetPathToPlayer(Vector3 worldPosition)
@@ -310,22 +308,21 @@ public class GridManager : MonoBehaviour
         currentCell.position = GetCellPosition(worldPosition);
 
         // find ourself in the dijkstras result
-        int exists = pathsToPlayer.IndexOf(currentCell);
+        bool exists = pathsToPlayer.ContainsKey(currentCell);
 
         // if we dont exist we just return an array with just us in it
-        if (exists == -1)
+        if (!exists)
         {
             ret.Add(currentCell);
             return ret;
         }
         else
         {
-            int currentIdx = exists;
             // we want to trace our steps
-            while (currentIdx != -1)
+            while (currentCell != null)
             {
-                ret.Add(pathsToPlayer[currentIdx]);
-                currentIdx = pathsToPlayer[currentIdx].parentIdx;
+                ret.Add(currentCell);
+                currentCell = pathsToPlayer[currentCell];
             }
         }
 
