@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Utils;
 
 public class GridManager : MonoBehaviour
 {
@@ -29,7 +27,7 @@ public class GridManager : MonoBehaviour
 
 
     // used in dijkstras
-    private PriorityQueue<NodeInfo, int> toSearch;
+    private SortedSet<NodeInfo> toSearch;
 
     private void Awake()
     {
@@ -43,11 +41,11 @@ public class GridManager : MonoBehaviour
             traversable.CompressBounds();
             notTraversable.CompressBounds();
             map = new Dictionary<Vector2Int, TileInfo>();
-            pathsToPlayer = new Dictionary<NodeInfo, NodeInfo>(); 
+            pathsToPlayer = new Dictionary<NodeInfo, NodeInfo>();
             player = FindObjectOfType<Player>();
             CreateGrid();
             prevPosition = GetCellPosition(player.transform.position);
-            toSearch = new PriorityQueue<NodeInfo, int>();
+            toSearch = new SortedSet<NodeInfo>();
         }
     }
 
@@ -192,7 +190,7 @@ public class GridManager : MonoBehaviour
         return neighbors;
 
     }
-    public class NodeInfo
+    public class NodeInfo : IComparable<NodeInfo>
     {
         // which position on the map does this correspond to
         public Vector2Int position;
@@ -202,6 +200,25 @@ public class GridManager : MonoBehaviour
 
         // distance from origin in moves
         public int distance;
+
+        public int CompareTo(NodeInfo other)
+        {
+            int dist = distance - other.distance;
+            if (dist == 0)
+            {
+                dist = position.x - other.position.x;
+                if ( dist == 0)
+                {
+                    return position.y - other.position.y;
+                } else
+                {
+                    return dist;
+                }
+            } else
+            {
+                return dist;
+            }
+        }
 
         public override bool Equals(object? obj)
         {
@@ -247,15 +264,15 @@ public class GridManager : MonoBehaviour
         searched.Clear();
         NodeInfo start = new NodeInfo();
         start.position = startingSquare;
+        start.distance = 0;
         start.parent = null;
-        toSearch.Enqueue(start, 0);
+        toSearch.Add(start);
 
         while (toSearch.Count > 0)
         {
-            int currentDist;
-            NodeInfo current;
-            toSearch.TryPeek(out current, out currentDist);
-            toSearch.Dequeue();
+            NodeInfo current = toSearch.Min;
+            int currentDist = current.distance;
+            toSearch.Remove(current);
             searched.Add(current, current.parent);
 
             List<NodeInfo> neighbors = current.NeighborsToNodeInfos(GetNeighbors(current.position), current);
@@ -288,11 +305,11 @@ public class GridManager : MonoBehaviour
                     continue;
                 }
 
-                bool inSearch = toSearch.UnorderedItems.Select(a => a.Element).Contains(neighbor);
+                bool inSearch = toSearch.Contains(neighbor);
 
                 if (!inSearch)
                 {
-                    toSearch.Enqueue(neighbor, distance);
+                    toSearch.Add(neighbor);
                 }
 
             }
