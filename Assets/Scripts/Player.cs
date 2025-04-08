@@ -70,15 +70,31 @@ public class Player : MonoBehaviour
         // Cap max speed
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, topSpeed);
 
-        // Update rotation
-        // Negative bc idk it just didn't work.
-        // 2.5 to make it rotate faster
-        float horizontalInput = Input.GetAxis("Horizontal");
-        rb.MoveRotation(rb.rotation + (-1 * RotationalConstant * horizontalInput));
+        // Going forwards?
+        Vector2 vec = new Vector2(rb.transform.up.x, rb.transform.up.y);
+        bool movingForwards = (rb.velocity.normalized - vec).magnitude < 1;
+        Debug.Log((rb.velocity.normalized - vec));
+
+        bool canRotate = rb.velocity.magnitude > 0.5;
+
+        if (canRotate)
+        {
+            // Update rotation
+            // Negative bc idk it just didn't work.
+            // 2.5 to make it rotate faster
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float updatedAngle = (rb.rotation + ((movingForwards ? -1 : 1) * RotationalConstant * horizontalInput));
+            rb.MoveRotation(updatedAngle);
+        }
 
         Camera.main.transform.position = this.transform.position + new Vector3(0,0,-10);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
+
+    //private void Update()
+    //{
+         
+    //}
 
     public void TakeDamage(int damage)
     {
