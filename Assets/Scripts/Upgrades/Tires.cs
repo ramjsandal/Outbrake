@@ -1,18 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Engine : IUpgrade
+public class Tires : IUpgrade
 {
     private int level;
-    private static readonly Dictionary<int, float> topspeeds = new Dictionary<int, float>()
+    private static readonly Dictionary<int, float> maxRotations = new Dictionary<int, float>()
     {
-        {0, 1.25f},
-        {1, 1.75f},
-        {2, 2.25f},
-        {3, 3.00f}
+        {0, 2.25f},
+        {1, 2.75f},
+        {2, 3.25f},
+        {3, 4.00f}
     };
-    public Engine()
+    public Tires()
     {
         level = 0;
     }
@@ -23,7 +22,7 @@ public class Engine : IUpgrade
 
         // apply levelup to player
         Player player = GameObject.FindObjectOfType<Player>();
-        player.TopSpeed = topspeeds[level];
+        player.RotationalConstant = maxRotations[level];
         Debug.Log("I got upgraded! my " + this.GetType() + " level is now: " + level);
     }
 }

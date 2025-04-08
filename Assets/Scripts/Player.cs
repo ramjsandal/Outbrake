@@ -8,12 +8,29 @@ public class Player : MonoBehaviour
     public int damage = 100;
 
     private Rigidbody2D rb;
+
     // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
     private float topSpeed = 1.25f;
     public float TopSpeed
     {
         get { return topSpeed; }
         set { topSpeed = value; }
+    }
+
+    // constanct which we use to control car rotation
+    private float rotationalConstant = 2.25f;
+    public float RotationalConstant
+    {
+        get { return rotationalConstant; }
+        set { rotationalConstant = value; }
+    }
+
+    // used for damage reduction
+    public float damageReduction = 1.00f;
+    public float DamageReduction
+    {
+        get { return damageReduction; }
+        set { damageReduction = value; }
     }
 
     // Increase inertia to be closer to 1 to take longer to slow down
@@ -57,7 +74,7 @@ public class Player : MonoBehaviour
         // Negative bc idk it just didn't work.
         // 2.5 to make it rotate faster
         float horizontalInput = Input.GetAxis("Horizontal");
-        rb.MoveRotation(rb.rotation + (-2.25f * horizontalInput));
+        rb.MoveRotation(rb.rotation + (-1 * RotationalConstant * horizontalInput));
 
         Camera.main.transform.position = this.transform.position + new Vector3(0,0,-10);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
@@ -65,7 +82,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
+        health -= (int) (damage * DamageReduction);
         Debug.Log("Health: " + health);
         if (health <= 0)
         {

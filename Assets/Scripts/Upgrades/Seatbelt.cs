@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Engine : IUpgrade
+public class Seatbelt : IUpgrade
 {
     private int level;
-    private static readonly Dictionary<int, float> topspeeds = new Dictionary<int, float>()
+    private static readonly Dictionary<int, int> maxHealths = new Dictionary<int, int>()
     {
-        {0, 1.25f},
-        {1, 1.75f},
-        {2, 2.25f},
-        {3, 3.00f}
+        {0, 100},
+        {1, 125},
+        {2, 150},
+        {3, 200}
     };
-    public Engine()
+    public Seatbelt()
     {
         level = 0;
     }
@@ -23,7 +23,7 @@ public class Engine : IUpgrade
 
         // apply levelup to player
         Player player = GameObject.FindObjectOfType<Player>();
-        player.TopSpeed = topspeeds[level];
+        player.health = maxHealths[level];
         Debug.Log("I got upgraded! my " + this.GetType() + " level is now: " + level);
     }
 }
