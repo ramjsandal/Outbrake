@@ -21,6 +21,7 @@ public class TollGate : MonoBehaviour
         {
             MoneyPool.Instance.SpendMoney(price);
             Destroy(this.gameObject);
+            UpgradeManager.Instance.LevelUpUpgrade(UpgradeManager.Upgrade.ENGINE);
         } 
     }
 }

@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Tilemaps;
 using static GridManager;
 
 public class Player : MonoBehaviour
@@ -13,8 +9,12 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
-    private float topSpeedBaseline = 1.25f;
-
+    private float topSpeed = 1.25f;
+    public float TopSpeed
+    {
+        get { return topSpeed; }
+        set { topSpeed = value; }
+    }
 
     // Increase inertia to be closer to 1 to take longer to slow down
     float inertia = 0.99f;
@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         float verticalForce = verticalInput * acceleration;
 
-        float topSpeed = topSpeedBaseline;
+        float topSpeed = this.topSpeed;
         if (gridManager.OnRoad(transform.position))
         {
             verticalForce *= 2;
