@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,7 +36,28 @@ public class UpgradeManager : MonoBehaviour
 
     public void LevelUpUpgrade(Upgrade upgrade)
     {
-        upgrades[upgrade].LevelUp();
+        OnLevelUp(new LevelUpEventArgs(upgrade, upgrades[upgrade].LevelUp()));
+    }
+
+    public event EventHandler<LevelUpEventArgs> LeveledUp;
+
+    public class LevelUpEventArgs : EventArgs
+    {
+        public Upgrade upgrade;
+        public int level;
+
+        public LevelUpEventArgs(Upgrade u, int l)
+        {
+            this.upgrade = u;
+            this.level = l;
+        }
+    }
+    public void OnLevelUp(LevelUpEventArgs e)
+    {
+        if (LeveledUp != null)
+        {
+            LeveledUp(this, e);
+        }
     }
 
 }

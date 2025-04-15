@@ -15,7 +15,7 @@ public class Chassis : IUpgrade
     {
         level = 0;
     }
-    public void LevelUp()
+    public int LevelUp()
     {
         // increase level
         level = Mathf.Min(level + 1, 3);
@@ -24,5 +24,7 @@ public class Chassis : IUpgrade
         Player player = GameObject.FindObjectOfType<Player>();
         player.DamageReduction = maxReductions[level];
         Debug.Log("I got upgraded! my " + this.GetType() + " level is now: " + level);
+
+        return level;
     }
 }
