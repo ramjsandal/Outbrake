@@ -207,14 +207,16 @@ public class GridManager : MonoBehaviour
             if (dist == 0)
             {
                 dist = position.x - other.position.x;
-                if ( dist == 0)
+                if (dist == 0)
                 {
                     return position.y - other.position.y;
-                } else
+                }
+                else
                 {
                     return dist;
                 }
-            } else
+            }
+            else
             {
                 return dist;
             }
@@ -398,6 +400,18 @@ public class GridManager : MonoBehaviour
     public Vector3 GetPlayerPosition()
     {
         return player.transform.position;
+    }
+
+    public bool OnTraversableTile(Vector3 worldPosition)
+    {
+        Vector3Int tilePosn = road.WorldToCell(worldPosition);
+        TileBase tile = road.GetTile(tilePosn);
+        if (tile != null) return true;
+
+        tilePosn = traversable.WorldToCell(worldPosition);
+        tile = traversable.GetTile(tilePosn);
+
+        return tile != null;
     }
 
 }

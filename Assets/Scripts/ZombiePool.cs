@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoneyPool : MonoBehaviour
+public class ZombiePool : MonoBehaviour
 {
-    private static MoneyPool _instance;
-    public static MoneyPool Instance { get { return _instance; } }
+    private static ZombiePool _instance;
+    public static ZombiePool Instance { get { return _instance; } }
 
-    public int initialMoneyToPool = 500;
+    [SerializeField] private int initialZombiesToPool = 500;
 
-    public GameObject moneyPrefab;
+    [SerializeField] private GameObject zombiePrefab;
 
-    public int playerMoney;
+    [SerializeField] private GameObject policeZombiePrefab;
 
-    [SerializeField] private Transform moneyParent;
+    [SerializeField] private Transform zombieParent;
 
     private HashSet<GameObject> pool;
 
     private int numActive;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -31,12 +32,11 @@ public class MoneyPool : MonoBehaviour
 
             pool = new HashSet<GameObject>();
             numActive = 0;
-            playerMoney = 0;
 
-            for (int i = 0; i < initialMoneyToPool; i++)
+            for (int i = 0; i < initialZombiesToPool; i++)
             {
-                GameObject next = Instantiate(moneyPrefab);
-                next.transform.SetParent(moneyParent);
+                GameObject next = Instantiate(PickZombiePrefab());
+                next.transform.SetParent(zombieParent);
                 next.SetActive(false);
                 pool.Add(next);
             }
@@ -51,7 +51,7 @@ public class MoneyPool : MonoBehaviour
             GameObject next = null;
             for (int i = 0; i < 10; i++)
             {
-                next = Instantiate(moneyPrefab);
+                next = Instantiate(PickZombiePrefab());
                 next.SetActive(false);
             }
             next.SetActive(true);
@@ -61,23 +61,32 @@ public class MoneyPool : MonoBehaviour
         } else
         {
             // if we have free money, get one
-            GameObject spawn = pool.First(dollar => !dollar.activeSelf);
+            GameObject spawn = pool.First(zombie => !zombie.activeSelf);
             spawn.SetActive(true);
             numActive++;
             return spawn;
         }
     }
 
-    public void ReturnToPool(GameObject money)
+    public void ReturnToPool(GameObject zombie)
     {
-        money.SetActive(false);
-        playerMoney++;
+        zombie.SetActive(false);
         numActive--;
     }
 
-    public void SpendMoney(int amount)
+    private GameObject PickZombiePrefab()
     {
-        playerMoney -= amount;
+        int r = Random.Range(0, 100);
+
+        if (r < 20)
+        {
+            return policeZombiePrefab;
+        }
+        else
+        {
+            return zombiePrefab;
+        }
+
     }
 
 }

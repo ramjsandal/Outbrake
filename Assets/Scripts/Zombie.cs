@@ -93,7 +93,7 @@ public class Zombie : MonoBehaviour
         {
             Vector2 vel = player.GetVelocity();
             float speed = vel.magnitude;
-            Debug.Log(speed);
+            //Debug.Log(speed);
 
             // if player is going too slow, damage the player
             if (speed < .25f)
@@ -109,10 +109,26 @@ public class Zombie : MonoBehaviour
 
 
             }
-            StartCoroutine(Knockback());
+            if (this.isActiveAndEnabled)
+            {
+                StartCoroutine(Knockback());
+            }
 
         }
 
+    }
+
+    public void ResetZombie()
+    {
+        StopAllCoroutines();
+        chooseNewPosition = true;
+        nextPosition = transform.position;
+        currentHealth = maxHealth;
+        rb.isKinematic = true;
+        rb.SetRotation(0);
+        rb.freezeRotation = true;
+        rb.velocity = Vector2.zero;
+        stunned = false;
     }
 
     void Die()
@@ -133,7 +149,8 @@ public class Zombie : MonoBehaviour
             money.transform.Rotate(new Vector3(0, 0, zRotation));
         }
 
-        Destroy(gameObject);
+        ZombiePool.Instance.ReturnToPool(this.gameObject);
+        ResetZombie();
     }
 
     public void TakeDamage(int amount)
