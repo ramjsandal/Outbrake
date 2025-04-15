@@ -23,7 +23,7 @@ public class Seatbelt : IUpgrade
 
         // apply levelup to player
         Player player = GameObject.FindObjectOfType<Player>();
-        player.health = maxHealths[level];
+        player.Health = maxHealths[level];
         Debug.Log("I got upgraded! my " + this.GetType() + " level is now: " + level);
         return level;
     }

@@ -1,9 +1,28 @@
+using System;
 using UnityEngine;
 using static GridManager;
 
 public class Player : MonoBehaviour
 {
-    public int health = 100;
+    private int health = 100;
+    public int Health
+    {
+        get { return health; }
+        set { 
+            health = value;
+            OnHealthChanged(null);
+        }
+    }
+
+    public event EventHandler<EventArgs> HealthChanged;
+    public void OnHealthChanged(EventArgs e)
+    {
+        if (HealthChanged != null)
+        {
+            HealthChanged(this, e);
+        }
+    }
+
 
     public int damage = 100;
 
@@ -73,7 +92,7 @@ public class Player : MonoBehaviour
         // Going forwards?
         Vector2 vec = new Vector2(rb.transform.up.x, rb.transform.up.y);
         bool movingForwards = (rb.velocity.normalized - vec).magnitude < 1;
-        Debug.Log((rb.velocity.normalized - vec));
+        //Debug.Log((rb.velocity.normalized - vec));
 
         bool canRotate = rb.velocity.magnitude > 0.5;
 
@@ -87,20 +106,20 @@ public class Player : MonoBehaviour
             rb.MoveRotation(updatedAngle);
         }
 
-        Camera.main.transform.position = this.transform.position + new Vector3(0,0,-10);
+        Camera.main.transform.position = this.transform.position + new Vector3(0, 0, -10);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
 
     //private void Update()
     //{
-         
+
     //}
 
     public void TakeDamage(int damage)
     {
-        health -= (int) (damage * DamageReduction);
-        Debug.Log("Health: " + health);
-        if (health <= 0)
+        Health -= (int)(damage * DamageReduction);
+        Debug.Log("Health: " + Health);
+        if (Health <= 0)
         {
             Die();
         }
