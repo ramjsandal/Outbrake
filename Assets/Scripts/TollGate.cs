@@ -17,7 +17,7 @@ public class TollGate : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       if (collision.transform.CompareTag("Player") && MoneyPool.Instance.playerMoney >= price)
+       if (collision.transform.CompareTag("Player") && MoneyPool.Instance.PlayerMoney >= price)
         {
             MoneyPool.Instance.SpendMoney(price);
             Destroy(this.gameObject);

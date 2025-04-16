@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MoneyPool : MonoBehaviour
 {
@@ -12,7 +14,17 @@ public class MoneyPool : MonoBehaviour
 
     public GameObject moneyPrefab;
 
-    public int playerMoney;
+    private int playerMoney;
+
+    public int PlayerMoney
+    {
+        get { return playerMoney; }
+        set
+        {
+            playerMoney = value;
+            OnMoneyChanged(null);
+        }
+    }
 
     [SerializeField] private Transform moneyParent;
 
@@ -31,7 +43,7 @@ public class MoneyPool : MonoBehaviour
 
             pool = new HashSet<GameObject>();
             numActive = 0;
-            playerMoney = 0;
+            PlayerMoney = 0;
 
             for (int i = 0; i < initialMoneyToPool; i++)
             {
@@ -58,7 +70,8 @@ public class MoneyPool : MonoBehaviour
             numActive++;
             return next;
 
-        } else
+        }
+        else
         {
             // if we have free money, get one
             GameObject spawn = pool.First(dollar => !dollar.activeSelf);
@@ -71,13 +84,23 @@ public class MoneyPool : MonoBehaviour
     public void ReturnToPool(GameObject money)
     {
         money.SetActive(false);
-        playerMoney++;
+        PlayerMoney++;
         numActive--;
     }
 
     public void SpendMoney(int amount)
     {
-        playerMoney -= amount;
+        PlayerMoney -= amount;
+    }
+
+    public event EventHandler MoneyChanged;
+
+    public void OnMoneyChanged(EventArgs e)
+    {
+        if (MoneyChanged != null)
+        {
+            MoneyChanged(this, e);
+        }
     }
 
 }
