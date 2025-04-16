@@ -78,7 +78,7 @@ public class ZombiePool : MonoBehaviour
     {
         int r = Random.Range(0, 100);
 
-        if (r < 20)
+        if (r < 10)
         {
             return policeZombiePrefab;
         }

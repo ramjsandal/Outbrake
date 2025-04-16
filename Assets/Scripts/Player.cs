@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
 
     // Lowkey arbitrarily set. Might need to increase top speed if you want it to be "faster"
-    private float topSpeed = 1.25f;
+    private float topSpeed = 1.75f;
     public float TopSpeed
     {
         get { return topSpeed; }

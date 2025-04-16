@@ -7,10 +7,10 @@ public class Engine : IUpgrade
     private int level;
     private static readonly Dictionary<int, float> topspeeds = new Dictionary<int, float>()
     {
-        {0, 1.25f},
-        {1, 1.75f},
-        {2, 2.25f},
-        {3, 3.00f}
+        {0, 1.75f},
+        {1, 2.25f},
+        {2, 2.75f},
+        {3, 3.50f}
     };
     public Engine()
     {
